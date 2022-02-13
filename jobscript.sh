@@ -14,6 +14,19 @@
 ### Requesting timeformat is <days>:<hours>:<minutes>:<seconds>
 #PBS -l walltime=00:00:05:00
 
+# Load module and activate env
+source ~/.bashrc
+module load usage_script/2.0
+
+conda activate slack_app
+
+# Go to the directory from where the job was submitted (initial directory is $HOME)
+echo Working directory is $PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
+
+# Define number of processors
+NPROCS=`wc -l < $PBS_NODEFILE`
+echo This job has allocated $NPROCS nodes
 
 # Config
 PRIVATE_HOOK_FILE=path/to/file
