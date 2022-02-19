@@ -1,0 +1,4 @@
+thin_node: 3.6
+fat_node: 7.2 # to check
+gpu_node: 7.2
+storage_TB: 89
