@@ -6,6 +6,8 @@ dependencies:
   - autopep8
   - croniter
   - slackclient
+  - yaml
+  - pandas
   - pip
   - pip:
     - slack-webhook
