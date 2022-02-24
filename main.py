@@ -52,7 +52,7 @@ if __name__ == "__main__":
     df = pd.DataFrame(usage.data).T
 
     TB_GB = 1024 # binary format, 1000 in decimal format
-    msg += (f"\n\nStorage costs: {prices['storage_TB']*storage_gb/TB_GB:.2f} DKK (per month)"
+    msg += (f"\n\nStorage costs: {prices['storage_TB']*storage_gb/TB_GB:,.2f} DKK (per month)"
                "\n               (maximum usage per month is used for prizing)")
 
     
@@ -65,6 +65,6 @@ if __name__ == "__main__":
     costs.index.name = 'user:'
 
     msg += f"\n\nAll compute costs:"
-    msg += f"\n```\n{costs.to_string(float_format='{:.1f} DKK'.format)}\n```"
+    msg += f"\n```\n{costs.to_string(float_format='{:,.1f} DKK'.format)}\n```"
 
     post_message(args.hook_url, msg=msg)
