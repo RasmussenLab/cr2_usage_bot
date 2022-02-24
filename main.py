@@ -10,7 +10,8 @@ import pandas as pd
 from slack_webhook import Slack
 from src import parser
 
-def post_message(slack_webhook:str, msg:str):
+
+def post_message(slack_webhook: str, msg: str):
     slack = Slack(url=slack_webhook)
     slack.post(text=msg)
 
@@ -19,19 +20,20 @@ if __name__ == "__main__":
     import argparse
     argparser = argparse.ArgumentParser(prog="python main.py",
                                         description='Message Computerome2 usage to Slack Channel.')
-    argparser.add_argument('--hook_url', required=False, 
+    argparser.add_argument('--hook_url', required=False,
                            help="Slack Endpoint to use for posting. Not needed if "
                            "the environment varialbe 'SLACK_WEBHOOK' is set.")
     argparser.add_argument('--message_file', required=True,
-                            help='Filepath to text file containing message.')
+                           help='Filepath to text file containing message.')
     args = argparser.parse_args()
-    
+
     try:
-        if not args.hook_url: 
+        if not args.hook_url:
             args.hook_url = os.environ["SLACK_WEBHOOK"]
     except KeyError:
-        raise EnvironmentError('Missing SLACK_WEBHOOK environment variable. Please set. See README.')
-    
+        raise EnvironmentError(
+            'Missing SLACK_WEBHOOK environment variable. Please set. See README.')
+
     with open(pathlib.Path(args.message_file)) as f:
         msg = f.read()
     msg = f"```\n{msg}```\n"
@@ -51,15 +53,17 @@ if __name__ == "__main__":
         prices = yaml.safe_load(f)
     df = pd.DataFrame(usage.data).T
 
-    TB_GB = 1024 # binary format, 1000 in decimal format
+    TB_GB = 1024  # binary format, 1000 in decimal format
     msg += (f"\n\nStorage costs: {prices['storage_TB']*storage_gb/TB_GB:,.2f} DKK (per month)"
-               "\n               (maximum usage per month is used for prizing)")
+            "\n               (maximum usage per month is used for prizing)")
 
-    
-    costs = df[usage.headers[0]] * prices['thin_node'] / prices['thin_node_cpus']
+    costs = df[usage.headers[0]] * \
+        prices['thin_node'] / prices['thin_node_cpus']
     costs = costs.to_frame('thin nodes')
-    costs['fat nodes'] = df[usage.headers[2]] * prices['fat_node'] / prices['fat_node_cpus']
-    costs['gpu nodes'] = df[usage.headers[4]] * prices['gpu_node'] / prices['gpu_node_cpus']
+    costs['fat nodes'] = df[usage.headers[2]] * \
+        prices['fat_node'] / prices['fat_node_cpus']
+    costs['gpu nodes'] = df[usage.headers[4]] * \
+        prices['gpu_node'] / prices['gpu_node_cpus']
     costs['total'] = costs.sum(axis=1)
     costs.columns.name = 'in DKK:'
     costs.index.name = 'user:'
