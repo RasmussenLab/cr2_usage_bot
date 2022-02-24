@@ -31,6 +31,14 @@ The python script to send the message can be executed for testing:
 python main.py --hook_url URL --message_file path/to/message
 ```
 
+Test with example
+
+```
+conda activate slack_app
+hook=$(cat hook) # hook should contain weburl
+python main.py --hook_url $hook --message_file logs/usage_2022_02_10.txt
+```
+
 ### Delayed job submission
 
 ```bash
@@ -73,4 +81,5 @@ you have to provide the fullpath to the jobscript.
 # every Monday 10 after 10am
 10 10 * * 1 qsub jobscript.sh -M your.mail@cpr.ku.dk -A cpr_00000 -W grouplist=cpr_00000
 ```
+
 

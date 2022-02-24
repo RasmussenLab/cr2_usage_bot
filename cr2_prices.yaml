@@ -1,4 +1,6 @@
 thin_node: 3.6
-fat_node: 7.2 # to check
+thin_node_cpus : 40
+fat_node: 3.6 # more memory, same ammount of cpus
+fat_node_cpus : 40
 gpu_node: 7.2
-storage_TB: 89
+storage_TB: 89 # per month

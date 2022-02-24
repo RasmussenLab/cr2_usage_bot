@@ -6,7 +6,7 @@ dependencies:
   - autopep8
   - croniter
   - slackclient
-  - yaml
+  - pyyaml
   - pandas
   - pip
   - pip:
