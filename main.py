@@ -59,12 +59,12 @@ if __name__ == "__main__":
     costs = df[usage.headers[0]] * prices['thin_node'] / prices['thin_node_cpus']
     costs = costs.to_frame('thin nodes')
     costs['fat nodes'] = df[usage.headers[2]] * prices['fat_node'] / prices['fat_node_cpus']
-    costs['gpu nodes'] = df[usage.headers[4]] * prices['gpu_node']
+    costs['gpu nodes'] = df[usage.headers[4]] * prices['gpu_node'] / prices['gpu_node_cpus']
     costs['total'] = costs.sum(axis=1)
     costs.columns.name = 'in DKK:'
     costs.index.name = 'user:'
 
     msg += f"\n\nAll compute costs:"
     msg += f"\n```\n{costs.to_string(float_format='{:.1f} DKK'.format)}\n```"
-    
+
     post_message(args.hook_url, msg=msg)

@@ -3,4 +3,5 @@ thin_node_cpus : 40
 fat_node: 3.6 # more memory, same ammount of cpus
 fat_node_cpus : 40
 gpu_node: 7.2
+gpu_node_cpus : 40
 storage_TB: 89 # per month
