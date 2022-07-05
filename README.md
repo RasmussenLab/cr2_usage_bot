@@ -18,6 +18,8 @@ conda env create --file environment.yml
 
 ## Install SlackBot, Bot and Webhooks
 
+Go to [api.slack.com/apps](https://api.slack.com/apps), then:
+
 1. Create a SlackApp and optionally set an App icon
 2. Activate the Feature `Webhooks`
 
