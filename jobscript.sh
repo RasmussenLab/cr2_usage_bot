@@ -32,11 +32,7 @@ echo This job has allocated $NPROCS nodes
 PRIVATE_HOOK_FILE=path/to/file
 GROUP=cpr_00000
 YEAR=$(date '+%Y')
-MONTH=$(date '+%m')
-
-# Load module and activate env
-module load usage_script/2.0
-conda activate slack_app
+MONTH=$(expr $(date '+%m') + 0)
 
 # usage to file with current date
 usage_file=logs/usage_$(date '+%Y_%m_%d').txt
