@@ -21,16 +21,23 @@ module load usage_script/2.0
 conda activate slack_app
 
 # Go to the directory from where the job was submitted (initial directory is $HOME)
-echo Working directory is $PBS_O_WORKDIR
-cd $PBS_O_WORKDIR
+# echo Working directory is $PBS_O_WORKDIR
+# cd $PBS_O_WORKDIR
 
 # Define number of processors
 NPROCS=`wc -l < $PBS_NODEFILE`
 echo This job has allocated $NPROCS nodes
 
-# Config
-PRIVATE_HOOK_FILE=path/to/file
-GROUP=cpr_00000
+### Config
+PRIVATE_HOOK_FILE=~/.hook
+# Load Slack hook URL from private file
+hook_url=$(<$PRIVATE_HOOK_FILE)
+# Mails does not need to exit or can be empty
+MAILS_FILE=mails.txt 
+MAILS=$(<$MAILS_FILE)
+# Make group an environment variable
+GROUP_FILE=group.txt
+GROUP=$(<$GROUP_FILE)
 YEAR=$(date '+%Y')
 MONTH=$(expr $(date '+%m') + 0)
 
@@ -39,10 +46,15 @@ usage_file=logs/usage_$(date '+%Y_%m_%d').txt
 usage -a $GROUP -y $YEAR -m $MONTH > $usage_file
 
 echo Dumped to: $usage_file
-
-# Load Slack hook URL from private file
-hook_url=`cat $PRIVATE_HOOK_FILE`
+echo Mails: "$MAILS"
 
 # Send usage message
 python main.py --hook_url $hook_url --message_file $usage_file
+exit_code=$?
+
+if [ $exit_code -eq 0 ] && [ -n "$MAILS" ]; then
+    sendmail $MAILS < logs/usage_$(date '+%Y_%m_%d')_msg_send.txt
+else
+    echo "no mail sent."
+fi
 
