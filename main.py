@@ -1,11 +1,7 @@
 import os
 import pathlib
-import random
-import time
 import yaml
 
-from datetime import datetime, timedelta
-from croniter import croniter
 import pandas as pd
 from slack_webhook import Slack
 from src import parser
@@ -25,6 +21,8 @@ if __name__ == "__main__":
                            "the environment varialbe 'SLACK_WEBHOOK' is set.")
     argparser.add_argument('--message_file', required=True,
                            help='Filepath to text file containing message.')
+    argparser.add_argument('--delimiter', '-d', required=False,
+                           help='Specify usage delimiter.', default='```')
     args = argparser.parse_args()
 
     try:
@@ -33,10 +31,13 @@ if __name__ == "__main__":
     except KeyError:
         raise EnvironmentError(
             'Missing SLACK_WEBHOOK environment variable. Please set. See README.')
-
+    
     with open(pathlib.Path(args.message_file)) as f:
-        msg = f.read()
-    msg = f"```\n{msg}```\n"
+        for l in f:
+            header = l
+            break
+        _usage_report = f.read()
+    msg = f"Subject: {header}{args.delimiter}\n{_usage_report}{args.delimiter}\n"
 
     usage = parser.parse_usage_output(args.message_file)
     _total = {}
@@ -69,6 +70,12 @@ if __name__ == "__main__":
     costs.index.name = 'user:'
 
     msg += f"\n\nAll compute costs:"
-    msg += f"\n```\n{costs.to_string(float_format='{:,.1f} DKK'.format)}\n```"
+    msg += f"\n{args.delimiter}\n{costs.to_string(float_format='{:,.1f} DKK'.format)}\n{args.delimiter}"
+
+    fname_out = pathlib.Path(args.message_file)
+    fname_out = fname_out.parent / f"{fname_out.stem}_msg_send.txt"
+    
+    with open(fname_out, "w") as f:
+        f.write(msg.replace(args.delimiter, ''))
 
     post_message(args.hook_url, msg=msg)
