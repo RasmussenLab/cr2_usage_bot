@@ -31,7 +31,7 @@ Save a list of E-Mails in text file, per default, called `mails.txt`.
 It can be empty. All mails are on one line separated by spaces (as you would type it on the command line).
 
 ```
-
+abc123@domain.dk def123@domain2.dk
 ```
 
 the Slack hook can be saved in a private file in you home directory (for security) and again just save a one-liner.
