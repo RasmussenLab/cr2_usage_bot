@@ -25,6 +25,26 @@ Go to [api.slack.com/apps](https://api.slack.com/apps), then:
 
 See [documentation](https://api.slack.com/messaging/webhooks)
 
+## Config
+
+Save a list of E-Mails in text file, per default, called `mails.txt`.
+It can be empty. All mails are on one line separated by spaces (as you would type it on the command line).
+
+```
+abc123@domain.dk def123@domain2.dk
+```
+
+the Slack hook can be saved in a private file in you home directory (for security) and again just save a one-liner.
+File is per default called `~/.hook`:
+
+```
+https://hooks.slack.com/..../.../
+```
+
+Same idea for setting one group (and potentially later more than one). Define `group.txt` with your information.
+
+Check `jobscript.sh` for details.
+
 ## Execution
 
 The python script to send the message can be executed for testing:
