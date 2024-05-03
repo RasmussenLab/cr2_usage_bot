@@ -1,9 +1,11 @@
 import os
 import pathlib
-import yaml
+import sys
 
 import pandas as pd
+import yaml
 from slack_webhook import Slack
+
 from src import parser
 
 
@@ -24,21 +26,25 @@ if __name__ == "__main__":
     argparser.add_argument('--delimiter', '-d', required=False,
                            help='Specify usage delimiter.', default='```')
     args = argparser.parse_args()
-
     try:
         if not args.hook_url:
             args.hook_url = os.environ["SLACK_WEBHOOK"]
     except KeyError:
         raise EnvironmentError(
             'Missing SLACK_WEBHOOK environment variable. Please set. See README.')
-    
+
     with open(pathlib.Path(args.message_file)) as f:
-        for l in f:
-            header = l
+        for _l in f:
+            header = _l
             break
         _usage_report = f.read()
-    msg = f"Subject: {header}{args.delimiter}\n{_usage_report}{args.delimiter}\n"
+    if header.startswith('No data found'):
+        msg = "No data found for this month (yet)."
+        print(msg)
+        post_message(args.hook_url, msg=msg)
+        sys.exit(0)
 
+    msg = f"Subject: {header}{args.delimiter}\n{_usage_report}{args.delimiter}\n"
     usage = parser.parse_usage_output(args.message_file)
     _total = {}
     for key, value in zip(usage.headers, usage.total[1:]):
@@ -74,7 +80,7 @@ if __name__ == "__main__":
 
     fname_out = pathlib.Path(args.message_file)
     fname_out = fname_out.parent / f"{fname_out.stem}_msg_send.txt"
-    
+
     with open(fname_out, "w") as f:
         f.write(msg.replace(args.delimiter, ''))
 
